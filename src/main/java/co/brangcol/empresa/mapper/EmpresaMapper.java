@@ -6,6 +6,7 @@ import co.brangcol.empresa.dto.EmpresaRequest;
 import co.brangcol.empresa.dto.EmpresaResponse;
 import co.brangcol.empresa.model.DatosEmpresa;
 import co.brangcol.empresa.model.Empresa;
+import co.brangcol.shared.texto.Textos;
 
 @Component
 public class EmpresaMapper {

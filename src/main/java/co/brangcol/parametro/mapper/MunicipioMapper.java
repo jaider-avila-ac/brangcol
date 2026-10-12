@@ -9,7 +9,7 @@ import co.brangcol.parametro.dto.MunicipioResponse;
 import co.brangcol.parametro.model.Municipio;
 
 @Component
-public class ParametroMapper {
+public class MunicipioMapper {
 
 	public List<MunicipioResponse> aMunicipios(List<Municipio> municipios) {
 		List<MunicipioResponse> respuesta = new ArrayList<>();

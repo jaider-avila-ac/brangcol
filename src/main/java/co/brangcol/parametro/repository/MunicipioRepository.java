@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import co.brangcol.parametro.model.Municipio;
 
 @Repository
-public class ParametroRepository {
+public class MunicipioRepository {
 
 	private static final String MUNICIPIOS = """
 			select m.codigo_dane, m.nombre, d.nombre as departamento
@@ -21,7 +21,7 @@ public class ParametroRepository {
 
 	private final JdbcTemplate jdbc;
 
-	public ParametroRepository(JdbcTemplate jdbc) {
+	public MunicipioRepository(JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
 	}
 
@@ -31,6 +31,10 @@ public class ParametroRepository {
 				order by m.nombre
 				limit 20
 				""", new MunicipioMapper(), texto, texto);
+	}
+
+	public List<Municipio> todos() {
+		return jdbc.query(MUNICIPIOS + " order by m.nombre", new MunicipioMapper());
 	}
 
 	public boolean existeMunicipio(String codigo) {

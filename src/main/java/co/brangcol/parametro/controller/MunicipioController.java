@@ -8,25 +8,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.brangcol.parametro.dto.MunicipioResponse;
-import co.brangcol.parametro.mapper.ParametroMapper;
-import co.brangcol.parametro.service.ParametroService;
+import co.brangcol.parametro.mapper.MunicipioMapper;
+import co.brangcol.parametro.service.MunicipioService;
 
 @RestController
 @RequestMapping("/api/v1/parametros")
-public class ParametroController {
+public class MunicipioController {
 
-	private final ParametroService parametroService;
+	private final MunicipioService municipioService;
 
-	private final ParametroMapper parametroMapper;
+	private final MunicipioMapper municipioMapper;
 
-	public ParametroController(ParametroService parametroService, ParametroMapper parametroMapper) {
-		this.parametroService = parametroService;
-		this.parametroMapper = parametroMapper;
+	public MunicipioController(MunicipioService municipioService, MunicipioMapper municipioMapper) {
+		this.municipioService = municipioService;
+		this.municipioMapper = municipioMapper;
 	}
 
 	@GetMapping("/municipios")
 	public List<MunicipioResponse> municipios(@RequestParam(defaultValue = "") String buscar) {
-		return parametroMapper.aMunicipios(parametroService.buscarMunicipios(buscar));
+		return municipioMapper.aMunicipios(municipioService.buscarMunicipios(buscar));
 	}
 
 }

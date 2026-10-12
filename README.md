@@ -85,3 +85,15 @@ Los intentos fallidos y el bloqueo (5 intentos por cuenta, 20 por IP en 10 minut
 | POST | `/api/v1/invitaciones/consultar`, `/aceptar` | Publicas: pantalla "Aceptar invitacion" |
 
 Las invitaciones se envian por correo con Resend si `RESEND_API_KEY` esta configurada; si no, la respuesta trae el enlace para compartirlo. El token va despues de `#` en el enlace para que nunca llegue al servidor ni a los logs.
+
+## Clientes y proveedores (`/api/v1/terceros`)
+
+| Metodo | Ruta | Uso |
+|---|---|---|
+| GET | `/terceros?texto=&rol=TODOS\|CLIENTES\|PROVEEDORES&soloDeben=&pagina=&tamano=` | Busqueda paginada, tolera errores de escritura y tildes |
+| GET | `/terceros/documento?tipo=&numero=` | Si ya existe alguien con ese documento (204 si no) |
+| GET, POST, PUT | `/terceros`, `/terceros/{codigo}` | Ver, crear y editar (un mismo NIT puede ser cliente y proveedor) |
+| PUT | `/terceros/{codigo}/estado` | Activar o desactivar (no se borran) |
+| GET | `/terceros/plantilla` | Plantilla de Excel para importar |
+| POST | `/terceros/importar` | Importa un .xlsx (campo `archivo`); devuelve creados, actualizados y errores por fila |
+| GET | `/parametros/tipos-documento`, `/parametros/bancos` | Catalogos |

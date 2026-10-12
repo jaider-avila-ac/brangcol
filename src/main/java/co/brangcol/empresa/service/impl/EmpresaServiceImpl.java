@@ -7,7 +7,7 @@ import co.brangcol.empresa.model.DatosEmpresa;
 import co.brangcol.empresa.model.Empresa;
 import co.brangcol.empresa.repository.EmpresaRepository;
 import co.brangcol.empresa.service.EmpresaService;
-import co.brangcol.parametro.service.ParametroService;
+import co.brangcol.parametro.service.MunicipioService;
 import co.brangcol.shared.permiso.VerificadorPermisos;
 
 @Service
@@ -15,14 +15,14 @@ public class EmpresaServiceImpl implements EmpresaService {
 
 	private final EmpresaRepository empresaRepository;
 
-	private final ParametroService parametroService;
+	private final MunicipioService municipioService;
 
 	private final VerificadorPermisos permisos;
 
-	public EmpresaServiceImpl(EmpresaRepository empresaRepository, ParametroService parametroService,
+	public EmpresaServiceImpl(EmpresaRepository empresaRepository, MunicipioService municipioService,
 			VerificadorPermisos permisos) {
 		this.empresaRepository = empresaRepository;
-		this.parametroService = parametroService;
+		this.municipioService = municipioService;
 		this.permisos = permisos;
 	}
 
@@ -36,7 +36,7 @@ public class EmpresaServiceImpl implements EmpresaService {
 	@Override
 	@Transactional
 	public Empresa actualizar(DatosEmpresa datos) {
-		parametroService.validarMunicipio(datos.municipioCodigo());
+		municipioService.validarMunicipio(datos.municipioCodigo());
 		empresaRepository.actualizar(datos);
 		return empresaRepository.obtener();
 	}
