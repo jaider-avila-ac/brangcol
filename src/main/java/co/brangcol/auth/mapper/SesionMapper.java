@@ -7,13 +7,14 @@ import org.springframework.stereotype.Component;
 
 import co.brangcol.auth.dto.SesionResponse;
 import co.brangcol.auth.dto.YoResponse;
+import co.brangcol.auth.model.ImagenesSesion;
 import co.brangcol.auth.model.SesionAbierta;
 import co.brangcol.auth.model.SesionUsuario;
 
 @Component
 public class SesionMapper {
 
-	public YoResponse aYo(SesionUsuario sesion) {
+	public YoResponse aYo(SesionUsuario sesion, ImagenesSesion imagenes) {
 		YoResponse.Persona persona = new YoResponse.Persona(sesion.personaCodigo(), sesion.correo(), sesion.nombres(),
 				sesion.apellidos());
 		YoResponse.Empresa empresa = new YoResponse.Empresa(sesion.empresaCodigo(), sesion.razonSocial(),
@@ -21,7 +22,8 @@ public class SesionMapper {
 		YoResponse.Rol rol = new YoResponse.Rol(sesion.rolNombre(), sesion.rolClave(), sesion.esPropietario());
 		YoResponse.Plan plan = new YoResponse.Plan(sesion.planCodigo(), sesion.planNombre(),
 				sesion.suscripcionEstado());
-		return new YoResponse(persona, empresa, rol, plan, sesion.minutosInactividad(), sesion.funcionalidades(),
+		return new YoResponse(persona, empresa, rol, plan, sesion.minutosInactividad(), imagenes.foto(), imagenes.logo(),
+				sesion.funcionalidades(),
 				sesion.permisos());
 	}
 

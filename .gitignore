@@ -7,3 +7,4 @@ target/
 docs/
 PLAN.md
 .mvn/wrapper/maven-wrapper.jar
+datos/

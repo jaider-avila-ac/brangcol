@@ -37,10 +37,15 @@ public abstract class PruebaIntegracion {
 		registro.add("spring.datasource.url", PruebaIntegracion::url);
 		registro.add("spring.datasource.username", PruebaIntegracion::usuarioApp);
 		registro.add("spring.datasource.password", PruebaIntegracion::claveApp);
+		registro.add("brangcol.archivos.directorio", PruebaIntegracion::carpetaArchivos);
 	}
 
 	static String url() {
 		return "jdbc:postgresql://" + POSTGRES.getHost() + ":" + POSTGRES.getMappedPort(5432) + "/brangcol";
+	}
+
+	static String carpetaArchivos() {
+		return "target/archivos-prueba";
 	}
 
 	static String usuarioApp() {

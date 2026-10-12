@@ -2,7 +2,7 @@ package co.brangcol.auth.dto;
 
 import java.util.List;
 
-public record YoResponse(Persona persona, Empresa empresa, Rol rol, Plan plan, int minutosInactividad,
+public record YoResponse(Persona persona, Empresa empresa, Rol rol, Plan plan, int minutosInactividad, String foto, String logo,
 		List<String> funcionalidades, List<String> permisos) {
 
 	public record Persona(String codigo, String correo, String nombres, String apellidos) {

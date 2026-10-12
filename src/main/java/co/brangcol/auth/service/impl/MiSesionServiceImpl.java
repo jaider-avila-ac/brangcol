@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.brangcol.auth.model.ImagenesSesion;
 import co.brangcol.auth.model.SesionAbierta;
 import co.brangcol.auth.model.SesionUsuario;
 import co.brangcol.auth.repository.MiSesionRepository;
@@ -25,6 +26,12 @@ public class MiSesionServiceImpl implements MiSesionService {
 	@Transactional(readOnly = true)
 	public SesionUsuario miSesion() {
 		return miSesionRepository.miSesion();
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ImagenesSesion imagenes() {
+		return miSesionRepository.imagenes();
 	}
 
 	@Override

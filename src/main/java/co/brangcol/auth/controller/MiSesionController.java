@@ -29,7 +29,7 @@ public class MiSesionController {
 
 	@GetMapping("/yo")
 	public YoResponse yo() {
-		return sesionMapper.aYo(miSesionService.miSesion());
+		return sesionMapper.aYo(miSesionService.miSesion(), miSesionService.imagenes());
 	}
 
 	@GetMapping("/sesiones")

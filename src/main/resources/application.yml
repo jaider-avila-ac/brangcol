@@ -65,3 +65,5 @@ brangcol:
   correo:
     resend-api-key: ${RESEND_API_KEY:}
     remitente: ${CORREO_REMITENTE:BrangCol <no-responder@brandingcol.com>}
+  archivos:
+    directorio: ${ARCHIVOS_DIR:./datos/archivos}

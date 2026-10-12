@@ -97,3 +97,24 @@ Las invitaciones se envian por correo con Resend si `RESEND_API_KEY` esta config
 | GET | `/terceros/plantilla` | Plantilla de Excel para importar |
 | POST | `/terceros/importar` | Importa un .xlsx (campo `archivo`); devuelve creados, actualizados y errores por fila |
 | GET | `/parametros/tipos-documento`, `/parametros/bancos` | Catalogos |
+
+## Productos (`/api/v1/productos`)
+
+| Metodo | Ruta | Uso |
+|---|---|---|
+| GET | `/productos?texto=&tipo=&categoria=&soloComponentes=&incluirInactivos=&pagina=&tamano=` | Busqueda paginada por nombre, codigo o codigo de barras; trae precio con impuesto y foto |
+| GET, POST, PUT | `/productos`, `/productos/{codigo}` | Ver, crear y editar (SKU automatico P00001 si se deja vacio, codigos de barras, presentaciones) |
+| PUT | `/productos/{codigo}/estado` | Activar o desactivar (no se borran) |
+| GET, PUT | `/productos/{codigo}/receta` | Insumos que gasta un servicio, combo o fabricado; si la version ya se uso se crea una nueva |
+| POST | `/productos/{codigo}/foto` | Foto del producto (campo `imagen`, PNG/JPG/WEBP hasta 3 MB) |
+| GET, POST, PUT | `/productos/categorias`, `/productos/marcas` | Catalogos de la empresa |
+| GET | `/parametros/unidades`, `/impuestos` | Unidades de medida e impuestos |
+
+## Archivos
+
+| Metodo | Ruta | Uso |
+|---|---|---|
+| GET | `/archivos/{codigo}` | Devuelve una imagen de la empresa de la sesion |
+| POST | `/empresa/logo`, `/auth/foto` | Logo de la empresa y foto del usuario |
+
+Los archivos se guardan en disco en `ARCHIVOS_DIR` (por defecto `./datos/archivos`).
