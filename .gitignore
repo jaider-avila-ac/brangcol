@@ -6,3 +6,4 @@ target/
 .vscode/
 docs/
 PLAN.md
+.mvn/wrapper/maven-wrapper.jar

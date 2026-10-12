@@ -1,0 +1,73 @@
+{
+  "uid": "brangcol-api",
+  "title": "BrangCol API",
+  "timezone": "America/Bogota",
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Peticiones por segundo",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "sum by (uri) (rate(http_server_requests_seconds_count{application=\"brangcol\"}[1m]))", "legendFormat": "{{uri}}" }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Errores por segundo (4xx y 5xx)",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "sum by (status) (rate(http_server_requests_seconds_count{application=\"brangcol\", status=~\"4..|5..\"}[1m]))", "legendFormat": "{{status}}" }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Tiempo de respuesta promedio (s)",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "sum by (uri) (rate(http_server_requests_seconds_sum{application=\"brangcol\"}[5m])) / sum by (uri) (rate(http_server_requests_seconds_count{application=\"brangcol\"}[5m]))", "legendFormat": "{{uri}}" }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Conexiones a la base de datos",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "expr": "hikaricp_connections_active{application=\"brangcol\"}", "legendFormat": "activas" },
+        { "refId": "B", "expr": "hikaricp_connections_idle{application=\"brangcol\"}", "legendFormat": "libres" },
+        { "refId": "C", "expr": "hikaricp_connections_pending{application=\"brangcol\"}", "legendFormat": "en espera" }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Memoria usada (heap)",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
+      "targets": [
+        { "refId": "A", "expr": "sum(jvm_memory_used_bytes{application=\"brangcol\", area=\"heap\"})", "legendFormat": "usada" }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "logs",
+      "title": "Logs de error",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        { "refId": "A", "expr": "{app=\"brangcol\"} | json | log_level=\"ERROR\"" }
+      ]
+    }
+  ]
+}
