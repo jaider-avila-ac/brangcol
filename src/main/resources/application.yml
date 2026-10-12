@@ -57,3 +57,7 @@ brangcol:
   sesion:
     cookie: bc_sesion
     cookie-segura: ${COOKIE_SEGURA:true}
+  front-url: ${FRONT_URL:http://localhost:5173}
+  correo:
+    resend-api-key: ${RESEND_API_KEY:}
+    remitente: ${CORREO_REMITENTE:BrangCol <no-responder@brandingcol.com>}

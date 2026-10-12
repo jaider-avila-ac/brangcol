@@ -18,7 +18,7 @@ public class SesionFiltro extends OncePerRequestFilter {
 
 	// En estas rutas una cookie vieja o vencida no debe impedir la operacion
 	private static final Set<String> RUTAS_SIN_SESION = Set.of("/api/v1/auth/login", "/api/v1/auth/empresas",
-			"/api/v1/auth/salir");
+			"/api/v1/auth/salir", "/api/v1/invitaciones/consultar", "/api/v1/invitaciones/aceptar");
 
 	private final CookieSesion cookieSesion;
 

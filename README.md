@@ -52,6 +52,8 @@ Todas las respuestas de error tienen la forma `{ "message": "..." }`. Los errore
 | `GRAFANA_PASSWORD` | Clave del administrador de Grafana |
 | `COOKIE_SEGURA` | `true` por defecto; la cookie solo viaja por HTTPS (localhost se acepta) |
 | `FORWARD_HEADERS` | `none` por defecto; `native` detras de un proxy |
+| `FRONT_URL` | Direccion del front, para los enlaces de los correos |
+| `RESEND_API_KEY`, `CORREO_REMITENTE` | Envio de correos con Resend (vacio no envia) |
 
 ## Autenticacion (`/api/v1/auth`)
 
@@ -67,3 +69,19 @@ Todas las respuestas de error tienen la forma `{ "message": "..." }`. Los errore
 | PUT | `/contrasena` | `{actual, nueva}`. Cierra las otras sesiones |
 
 Los intentos fallidos y el bloqueo (5 intentos por cuenta, 20 por IP en 10 minutos) los lleva la base. Detras de un proxy (Traefik, Nginx) se usa `FORWARD_HEADERS=native` para registrar la IP real.
+
+## Empresa, usuarios y roles
+
+| Metodo | Ruta | Uso |
+|---|---|---|
+| GET, PUT | `/api/v1/empresa` | Datos de la empresa (el NIT y el estado no se editan) |
+| GET, PUT | `/api/v1/empresa/configuracion` | Decimales, inventario, aplicacion de pagos, sesiones |
+| GET, POST, PUT | `/api/v1/empresa/sedes` | Sedes |
+| GET | `/api/v1/parametros/municipios?buscar=` | Buscador de municipios |
+| GET | `/api/v1/usuarios` | Usuarios de la empresa |
+| PUT | `/api/v1/usuarios/{codigo}/rol`, `/estado` | Cambiar rol, activar o desactivar |
+| GET | `/api/v1/roles` | Roles con sus permisos |
+| GET, POST, DELETE | `/api/v1/usuarios/invitaciones` | Invitaciones pendientes, invitar y anular |
+| POST | `/api/v1/invitaciones/consultar`, `/aceptar` | Publicas: pantalla "Aceptar invitacion" |
+
+Las invitaciones se envian por correo con Resend si `RESEND_API_KEY` esta configurada; si no, la respuesta trae el enlace para compartirlo. El token va despues de `#` en el enlace para que nunca llegue al servidor ni a los logs.
