@@ -11,35 +11,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import co.brangcol.auth.model.EmpresaDisponible;
-import co.brangcol.auth.model.EstadoInicio;
-import co.brangcol.auth.model.ResultadoInicio;
 import co.brangcol.auth.model.SesionAbierta;
 import co.brangcol.auth.model.SesionUsuario;
 
 @Repository
-public class AuthRepository {
+public class MiSesionRepository {
 
 	private final JdbcTemplate jdbc;
 
-	public AuthRepository(JdbcTemplate jdbc) {
+	public MiSesionRepository(JdbcTemplate jdbc) {
 		this.jdbc = jdbc;
-	}
-
-	public ResultadoInicio iniciarSesion(String correo, String contrasena, String empresa, String ip, String agente) {
-		return jdbc.queryForObject(
-				"select estado, token, expira_en from plataforma.iniciar_sesion(?, ?, ?, ?::inet, ?)",
-				new ResultadoInicioMapper(), correo, contrasena, empresa, ip, agente);
-	}
-
-	public List<EmpresaDisponible> listarEmpresas(String correo, String contrasena, String ip, String agente) {
-		return jdbc.query(
-				"select empresa_codigo, razon_social, rol from plataforma.listar_empresas(?, ?, ?::inet, ?)",
-				new EmpresaDisponibleMapper(), correo, contrasena, ip, agente);
-	}
-
-	public void cerrarSesion(String token) {
-		jdbc.queryForObject("select 1 from plataforma.cerrar_sesion(?)", Integer.class, token);
 	}
 
 	public SesionUsuario miSesion() {
@@ -55,10 +36,6 @@ public class AuthRepository {
 		return total == null ? 0 : total;
 	}
 
-	public void cambiarMiContrasena(String actual, String nueva) {
-		jdbc.queryForObject("select 1 from plataforma.cambiar_mi_contrasena(?, ?)", Integer.class, actual, nueva);
-	}
-
 	private static List<String> lista(Array arreglo) throws SQLException {
 		List<String> valores = new ArrayList<>();
 		if (arreglo == null) {
@@ -69,26 +46,6 @@ public class AuthRepository {
 			valores.add((String) elemento);
 		}
 		return valores;
-	}
-
-	private static final class ResultadoInicioMapper implements RowMapper<ResultadoInicio> {
-
-		@Override
-		public ResultadoInicio mapRow(ResultSet rs, int fila) throws SQLException {
-			return new ResultadoInicio(EstadoInicio.valueOf(rs.getString("estado")), rs.getString("token"),
-					rs.getObject("expira_en", OffsetDateTime.class));
-		}
-
-	}
-
-	private static final class EmpresaDisponibleMapper implements RowMapper<EmpresaDisponible> {
-
-		@Override
-		public EmpresaDisponible mapRow(ResultSet rs, int fila) throws SQLException {
-			return new EmpresaDisponible(rs.getString("empresa_codigo"), rs.getString("razon_social"),
-					rs.getString("rol"));
-		}
-
 	}
 
 	private static final class SesionUsuarioMapper implements RowMapper<SesionUsuario> {
