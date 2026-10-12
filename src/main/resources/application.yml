@@ -20,6 +20,7 @@ spring:
 
 server:
   port: ${PORT:8080}
+  forward-headers-strategy: ${FORWARD_HEADERS:none}
   error:
     include-message: never
     include-stacktrace: never
@@ -55,3 +56,4 @@ sentry:
 brangcol:
   sesion:
     cookie: bc_sesion
+    cookie-segura: ${COOKIE_SEGURA:true}

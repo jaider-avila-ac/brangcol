@@ -18,7 +18,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 @SpringBootTest
 public abstract class PruebaIntegracion {
 
-	static final String CLAVE_DUENO = "dueno_prueba_123";
+	protected static final String CLAVE_DUENO = "dueno_prueba_123";
 	static final String CLAVE_APP = "app_prueba_123";
 	static final String CLAVE_WORKER = "worker_prueba_123";
 
@@ -51,7 +51,7 @@ public abstract class PruebaIntegracion {
 		return CLAVE_APP;
 	}
 
-	static Connection conectar(String usuario, String clave) throws SQLException {
+	protected static Connection conectar(String usuario, String clave) throws SQLException {
 		return DriverManager.getConnection(url(), usuario, clave);
 	}
 

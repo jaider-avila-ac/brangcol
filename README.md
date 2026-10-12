@@ -50,3 +50,20 @@ Todas las respuestas de error tienen la forma `{ "message": "..." }`. Los errore
 | `ENTORNO` | Nombre del entorno en Sentry |
 | `LOG_FORMATO` | `ecs` (JSON) por defecto |
 | `GRAFANA_PASSWORD` | Clave del administrador de Grafana |
+| `COOKIE_SEGURA` | `true` por defecto; la cookie solo viaja por HTTPS (localhost se acepta) |
+| `FORWARD_HEADERS` | `none` por defecto; `native` detras de un proxy |
+
+## Autenticacion (`/api/v1/auth`)
+
+| Metodo | Ruta | Uso |
+|---|---|---|
+| POST | `/login` | `{correo, contrasena, empresa?}`. Responde `OK` (crea la cookie) o `ELEGIR_EMPRESA` |
+| POST | `/empresas` | Empresas a las que puede entrar (exige la contrasena) |
+| POST | `/salir` | Cierra la sesion y borra la cookie |
+| GET | `/yo` | Persona, empresa, rol, plan, funcionalidades y permisos |
+| GET | `/sesiones` | Mis sesiones abiertas |
+| DELETE | `/sesiones/{codigo}` | Cierra una sesion |
+| DELETE | `/sesiones` | Cierra todas las demas |
+| PUT | `/contrasena` | `{actual, nueva}`. Cierra las otras sesiones |
+
+Los intentos fallidos y el bloqueo (5 intentos por cuenta, 20 por IP en 10 minutos) los lleva la base. Detras de un proxy (Traefik, Nginx) se usa `FORWARD_HEADERS=native` para registrar la IP real.
