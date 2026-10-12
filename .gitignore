@@ -1,0 +1,8 @@
+.env
+target/
+*.log
+.idea/
+*.iml
+.vscode/
+docs/
+PLAN.md
