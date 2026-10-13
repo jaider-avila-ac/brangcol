@@ -23,13 +23,17 @@ public class RecetaRepository {
 
 	public Receta vigente(String itemCodigo) {
 		return jdbc.query("""
-				select rv.numero, rv.bloqueada, c.codigo, c.nombre, u.simbolo, rc.cantidad, rc.merma_porcentaje, c.costo_promedio
+				select rv.numero, rv.bloqueada, c.codigo, c.nombre, coalesce(pu.simbolo, u.simbolo) as simbolo, pu.codigo_dian as presentacion,
+				       round(rc.cantidad / coalesce(iu.factor, 1), 4) as cantidad, rc.merma_porcentaje,
+				       c.costo_promedio * coalesce(iu.factor, 1) as costo_promedio
 				from producto.item i
 				join producto.receta r on r.empresa_id = i.empresa_id and r.item_id = i.id
 				join producto.receta_version rv on rv.empresa_id = r.empresa_id and rv.receta_id = r.id and rv.es_vigente
 				left join producto.receta_componente rc on rc.empresa_id = rv.empresa_id and rc.receta_version_id = rv.id
 				left join producto.item c on c.empresa_id = rc.empresa_id and c.id = rc.componente_item_id
 				left join parametro.unidad_medida u on u.id = c.unidad_base_id
+				left join parametro.unidad_medida pu on pu.id = rc.presentacion_id
+				left join producto.item_unidad iu on iu.empresa_id = c.empresa_id and iu.item_id = c.id and iu.unidad_id = rc.presentacion_id
 				where i.codigo = ?
 				order by c.nombre
 				""", new RecetaExtractor(), itemCodigo);
@@ -54,7 +58,7 @@ public class RecetaRepository {
 				if (rs.getString("codigo") != null) {
 					componentes.add(new ComponenteReceta(rs.getString("codigo"), rs.getString("nombre"),
 							rs.getString("simbolo"), rs.getBigDecimal("cantidad"), rs.getBigDecimal("merma_porcentaje"),
-							rs.getBigDecimal("costo_promedio")));
+							rs.getBigDecimal("costo_promedio"), rs.getString("presentacion")));
 				}
 			}
 			if (version == 0) {

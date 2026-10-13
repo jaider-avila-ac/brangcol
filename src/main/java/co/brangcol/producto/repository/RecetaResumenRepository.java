@@ -22,7 +22,7 @@ public class RecetaResumenRepository {
 		List<Object> parametros = new ArrayList<>();
 		StringBuilder sql = new StringBuilder("""
 				select i.codigo, i.sku, i.nombre, i.tipo,
-				       string_agg(c.nombre || ' ' || trim_scale(rc.cantidad) || ' ' || u.simbolo, ', ' order by c.nombre) as componentes,
+				       string_agg(c.nombre || ' ' || trim_scale(round(rc.cantidad / coalesce(iu.factor, 1), 4)) || ' ' || coalesce(pu.simbolo, u.simbolo), ', ' order by c.nombre) as componentes,
 				       count(rc.componente_item_id) as cantidad_componentes,
 				       round(coalesce(sum(rc.cantidad * (1 + rc.merma_porcentaje / 100) * c.costo_promedio), 0), 2) as costo,
 				       round(i.precio_venta * (1 + coalesce(imp.tarifa, 0) / 100), 2) as precio_con_impuesto
@@ -33,6 +33,8 @@ public class RecetaResumenRepository {
 				left join producto.receta_componente rc on rc.empresa_id = rv.empresa_id and rc.receta_version_id = rv.id
 				left join producto.item c on c.empresa_id = rc.empresa_id and c.id = rc.componente_item_id
 				left join parametro.unidad_medida u on u.id = c.unidad_base_id
+				left join parametro.unidad_medida pu on pu.id = rc.presentacion_id
+				left join producto.item_unidad iu on iu.empresa_id = c.empresa_id and iu.item_id = c.id and iu.unidad_id = rc.presentacion_id
 				where i.activo and i.tipo in ('SERVICIO', 'COMPUESTO', 'FABRICADO')
 				""");
 		if (texto != null) {

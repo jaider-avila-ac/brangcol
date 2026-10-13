@@ -106,7 +106,7 @@ Las invitaciones se envian por correo con Resend si `RESEND_API_KEY` esta config
 | GET, POST, PUT | `/productos`, `/productos/{codigo}` | Ver, crear y editar (SKU automatico P00001 si se deja vacio, codigos de barras, presentaciones) |
 | PUT | `/productos/{codigo}/estado` | Activar o desactivar (no se borran) |
 | GET | `/productos/recetas?texto=` | Servicios, combos y fabricados con lo que lleva cada uno, costo y precio |
-| GET, PUT | `/productos/{codigo}/receta` | Insumos que gasta un servicio, combo o fabricado; si la version ya se uso se crea una nueva |
+| GET, PUT | `/productos/{codigo}/receta` | Lo que gasta un servicio, combo o fabricado; cada componente puede ir en una presentacion del insumo (`presentacion`: "RM" = resma). Si la version ya se uso se crea una nueva |
 | GET, POST, PUT | `/productos/categorias`, `/productos/marcas` | Catalogos de la empresa |
 | GET | `/parametros/unidades`, `/impuestos` | Unidades de medida e impuestos |
 

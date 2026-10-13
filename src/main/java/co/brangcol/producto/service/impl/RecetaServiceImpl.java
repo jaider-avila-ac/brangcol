@@ -22,6 +22,8 @@ public class RecetaServiceImpl implements RecetaService {
 
 	private static final Pattern CODIGO = Pattern.compile("^[A-Za-z0-9]{12,16}$");
 
+	private static final Pattern UNIDAD = Pattern.compile("^[A-Za-z0-9]{1,4}$");
+
 	private static final BigDecimal CIEN = BigDecimal.valueOf(100);
 
 	private final RecetaRepository recetaRepository;
@@ -70,8 +72,15 @@ public class RecetaServiceImpl implements RecetaService {
 			if (json.length() > 1) {
 				json.append(',');
 			}
+			if (c.presentacion() != null && !UNIDAD.matcher(c.presentacion()).matches()) {
+				fallar("La presentación de un componente no es válida");
+			}
 			json.append("{\"item\":\"").append(c.item()).append("\",\"cantidad\":")
-				.append(c.cantidad().toPlainString()).append(",\"merma\":").append(merma.toPlainString()).append('}');
+				.append(c.cantidad().toPlainString()).append(",\"merma\":").append(merma.toPlainString());
+			if (c.presentacion() != null) {
+				json.append(",\"presentacion\":\"").append(c.presentacion()).append('"');
+			}
+			json.append('}');
 		}
 		return json.append(']').toString();
 	}

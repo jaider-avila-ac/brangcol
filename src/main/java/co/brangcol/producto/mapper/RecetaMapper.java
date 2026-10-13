@@ -12,6 +12,7 @@ import co.brangcol.producto.dto.RecetaRequest;
 import co.brangcol.producto.dto.RecetaResponse;
 import co.brangcol.producto.model.ComponenteReceta;
 import co.brangcol.producto.model.Receta;
+import co.brangcol.shared.texto.Textos;
 
 @Component
 public class RecetaMapper {
@@ -24,7 +25,8 @@ public class RecetaMapper {
 			return componentes;
 		}
 		for (ComponenteDto c : request.componentes()) {
-			componentes.add(new ComponenteReceta(c.item(), null, null, c.cantidad(), c.merma(), null));
+			componentes.add(new ComponenteReceta(c.item(), null, null, c.cantidad(), c.merma(), null,
+					Textos.vacioANulo(c.presentacion())));
 		}
 		return componentes;
 	}
@@ -38,7 +40,7 @@ public class RecetaMapper {
 		BigDecimal total = BigDecimal.ZERO;
 		for (ComponenteReceta c : receta.componentes()) {
 			componentes.add(new ComponenteDto(c.item(), c.nombre(), c.unidadSimbolo(), c.cantidad(), c.merma(),
-					c.costoUnitario()));
+					c.costoUnitario(), c.presentacion()));
 			BigDecimal factor = BigDecimal.ONE.add(c.merma().divide(CIEN, 6, RoundingMode.HALF_UP));
 			total = total.add(c.cantidad().multiply(factor).multiply(c.costoUnitario()));
 		}

@@ -186,6 +186,37 @@ class InventarioFlujoTest extends PruebaIntegracion {
 			.andExpect(jsonPath("$.content[0].cantidad").value(500.0));
 	}
 
+	@Test
+	void unaRecetaGastaPorResmasYOtraPorHojas() throws Exception {
+		String papel = producto("""
+				{"tipo":"INSUMO","nombre":"Papel bond carta","unidad":"ST","precioVenta":0,
+				 "unidades":[{"unidad":"RM","factor":500,"paraCompra":true,"paraVenta":false}]}
+				""");
+		String agenda = producto("""
+				{"tipo":"FABRICADO","nombre":"Agenda","unidad":"94","precioVenta":25000}
+				""");
+		mvc.perform(json(put("/api/v1/productos/" + agenda + "/receta").cookie(admin),
+				"{\"componentes\":[{\"item\":\"" + papel + "\",\"cantidad\":1,\"presentacion\":\"RM\"}]}"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.componentes[0].cantidad").value(1.0))
+			.andExpect(jsonPath("$.componentes[0].unidad").value("resma"))
+			.andExpect(jsonPath("$.componentes[0].presentacion").value("RM"));
+		mvc.perform(get("/api/v1/productos/recetas").cookie(admin))
+			.andExpect(jsonPath("$[0].componentes").value("Papel bond carta 1 resma"));
+
+		mvc.perform(json(post("/api/v1/inventario/ajustes").cookie(admin), """
+				{"clase":"INICIAL","bodega":"%s","motivo":"Inventario inicial","lineas":[{"item":"%s","sentido":"ENTRADA","cantidad":1500,"costo":40}]}
+				""".formatted(principal, papel)))
+			.andExpect(status().isCreated());
+		mvc.perform(json(post("/api/v1/inventario/producciones").cookie(admin), """
+				{"item":"%s","bodega":"%s","cantidad":2}
+				""".formatted(agenda, principal)))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.costoUnitario").value(20000.0));
+		mvc.perform(get("/api/v1/inventario/existencias?texto=papel").cookie(admin))
+			.andExpect(jsonPath("$.content[0].cantidad").value(500.0));
+	}
+
 	private String producto(String cuerpo) throws Exception {
 		return codigo(mvc.perform(json(post("/api/v1/productos").cookie(admin), cuerpo))
 			.andExpect(status().isCreated())
