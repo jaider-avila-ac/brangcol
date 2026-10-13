@@ -55,14 +55,12 @@ public class ItemRepository {
 				select i.codigo, i.sku, i.nombre, i.descripcion, i.tipo, i.se_vende, i.se_compra, i.maneja_inventario,
 				       c.codigo as categoria, c.nombre as categoria_nombre, m.codigo as marca, m.nombre as marca_nombre,
 				       u.codigo_dian as unidad, u.simbolo as unidad_simbolo, i.permite_fraccion, imp.codigo as impuesto,
-				       imp.tarifa, i.precio_venta, i.costo_promedio, i.ultimo_costo, i.activo, a.codigo as foto
+				       imp.tarifa, i.precio_venta, i.costo_promedio, i.ultimo_costo, i.activo
 				from producto.item i
 				join parametro.unidad_medida u on u.id = i.unidad_base_id
 				left join producto.categoria c on c.empresa_id = i.empresa_id and c.id = i.categoria_id
 				left join producto.marca m on m.empresa_id = i.empresa_id and m.id = i.marca_id
 				left join impuesto.impuesto imp on imp.empresa_id = i.empresa_id and imp.id = i.impuesto_id
-				left join transversal.archivo a on a.empresa_id = i.empresa_id and a.entidad = 'ITEM_FOTO'
-				     and a.entidad_id = i.id and a.eliminado_en is null
 				where i.codigo = ?
 				""", new ItemMapper(), codigo);
 		return items.isEmpty() ? null : items.get(0);
@@ -92,7 +90,7 @@ public class ItemRepository {
 					rs.getString("unidad"), rs.getString("unidad_simbolo"), rs.getBoolean("permite_fraccion"),
 					rs.getString("impuesto"), rs.getBigDecimal("tarifa"), rs.getBigDecimal("precio_venta"),
 					rs.getBigDecimal("costo_promedio"), rs.getBigDecimal("ultimo_costo"), rs.getBoolean("activo"),
-					rs.getString("foto"), new ArrayList<>(), new ArrayList<>());
+					new ArrayList<>(), new ArrayList<>());
 		}
 
 	}

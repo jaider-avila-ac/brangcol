@@ -111,6 +111,11 @@ class ProductosFlujoTest extends PruebaIntegracion {
 			.andExpect(jsonPath("$.componentes", hasSize(2)));
 		mvc.perform(get("/api/v1/productos/" + sobre + "/receta").cookie(admin))
 			.andExpect(jsonPath("$.componentes[*].nombre", hasItem("Goma líquida")));
+		mvc.perform(get("/api/v1/productos/recetas").cookie(admin))
+			.andExpect(jsonPath("$", hasSize(1)))
+			.andExpect(jsonPath("$[0].nombre").value("Sobre de diezmos"))
+			.andExpect(jsonPath("$[0].cantidadComponentes").value(2))
+			.andExpect(jsonPath("$[0].componentes").value("Goma líquida 2.5 mL, Papel bond carta 1 hoja"));
 
 		mvc.perform(get("/api/v1/productos?soloComponentes=true").cookie(admin))
 			.andExpect(jsonPath("$.content[*].nombre", not(hasItem("Sobre de diezmos"))));
@@ -134,25 +139,20 @@ class ProductosFlujoTest extends PruebaIntegracion {
 	}
 
 	@Test
-	void categoriasMarcasYFotos() throws Exception {
+	void categoriasMarcasLogoYFotoDePerfil() throws Exception {
 		mvc.perform(json(post("/api/v1/productos/categorias").cookie(admin), "{\"nombre\":\"Papelería\"}"))
 			.andExpect(jsonPath("$", hasSize(1)));
 		mvc.perform(json(post("/api/v1/productos/marcas").cookie(admin), "{\"nombre\":\"Norma\"}"))
 			.andExpect(jsonPath("$[0].nombre").value("Norma"));
-		String producto = codigo(mvc.perform(json(post("/api/v1/productos").cookie(admin), """
-				{"tipo":"SIMPLE","nombre":"Cuaderno","unidad":"94","precioVenta":5000}
-				""")).andReturn());
-
-		MvcResult foto = mvc.perform(multipart("/api/v1/productos/" + producto + "/foto")
-			.file(new MockMultipartFile("imagen", "cuaderno.png", "image/png", PNG))
+		MvcResult foto = mvc.perform(multipart("/api/v1/empresa/logo")
+			.file(new MockMultipartFile("imagen", "logo.png", "image/png", PNG))
 			.cookie(admin)).andExpect(status().isOk()).andReturn();
 		String archivo = foto.getResponse().getContentAsString().split("\"codigo\":\"")[1].substring(0, 12);
 		mvc.perform(get("/api/v1/archivos/" + archivo).cookie(admin))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType("image/png"));
-		mvc.perform(get("/api/v1/productos/" + producto).cookie(admin)).andExpect(jsonPath("$.foto").value(archivo));
 
-		mvc.perform(multipart("/api/v1/productos/" + producto + "/foto")
+		mvc.perform(multipart("/api/v1/auth/foto")
 			.file(new MockMultipartFile("imagen", "falso.png", "image/png", "no soy imagen".getBytes()))
 			.cookie(admin))
 			.andExpect(status().isBadRequest())

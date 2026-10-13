@@ -34,13 +34,11 @@ public class ItemBusquedaRepository {
 		StringBuilder sql = new StringBuilder("""
 				select i.codigo, i.sku, i.nombre, i.tipo, c.nombre as categoria, u.simbolo, i.precio_venta,
 				       round(i.precio_venta * (1 + coalesce(imp.tarifa, 0) / 100), 2) as precio_con_impuesto,
-				       i.costo_promedio, i.activo, a.codigo as foto, count(*) over () as total
+				       i.costo_promedio, i.activo, count(*) over () as total
 				from producto.item i
 				join parametro.unidad_medida u on u.id = i.unidad_base_id
 				left join producto.categoria c on c.empresa_id = i.empresa_id and c.id = i.categoria_id
 				left join impuesto.impuesto imp on imp.empresa_id = i.empresa_id and imp.id = i.impuesto_id
-				left join transversal.archivo a on a.empresa_id = i.empresa_id and a.entidad = 'ITEM_FOTO'
-				     and a.entidad_id = i.id and a.eliminado_en is null
 				where true
 				""");
 		if (!filtro.incluirInactivos()) {
@@ -86,7 +84,7 @@ public class ItemBusquedaRepository {
 				items.add(new ItemResumen(rs.getString("codigo"), rs.getString("sku"), rs.getString("nombre"),
 						rs.getString("tipo"), rs.getString("categoria"), rs.getString("simbolo"),
 						rs.getBigDecimal("precio_venta"), rs.getBigDecimal("precio_con_impuesto"),
-						rs.getBigDecimal("costo_promedio"), rs.getBoolean("activo"), rs.getString("foto")));
+						rs.getBigDecimal("costo_promedio"), rs.getBoolean("activo")));
 			}
 			return new PaginaItems(items, total);
 		}

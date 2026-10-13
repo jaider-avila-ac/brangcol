@@ -7,5 +7,5 @@ public record Item(String codigo, String sku, String nombre, String descripcion,
 		boolean seCompra, boolean manejaInventario, String categoria, String categoriaNombre, String marca,
 		String marcaNombre, String unidad, String unidadSimbolo, boolean permiteFraccion, String impuesto,
 		BigDecimal tarifaImpuesto, BigDecimal precioVenta, BigDecimal costoPromedio, BigDecimal ultimoCosto,
-		boolean activo, String foto, List<String> codigosBarras, List<UnidadAlterna> unidades) {
+		boolean activo, List<String> codigosBarras, List<UnidadAlterna> unidades) {
 }

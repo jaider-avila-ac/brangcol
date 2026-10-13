@@ -54,7 +54,7 @@ public class ItemMapper {
 		return new ItemResponse(i.codigo(), i.sku(), i.nombre(), i.descripcion(), i.tipo(), i.seVende(), i.seCompra(),
 				i.manejaInventario(), categoria, marca, i.unidad(), i.unidadSimbolo(), i.permiteFraccion(),
 				i.impuesto(), i.tarifaImpuesto(), i.precioVenta(), i.costoPromedio(), i.ultimoCosto(), i.activo(),
-				i.foto(), i.codigosBarras(), unidades);
+				i.codigosBarras(), unidades);
 	}
 
 }
