@@ -118,3 +118,20 @@ Las invitaciones se envian por correo con Resend si `RESEND_API_KEY` esta config
 | POST | `/empresa/logo`, `/auth/foto` | Logo de la empresa y foto del usuario |
 
 Los archivos se guardan en disco en `ARCHIVOS_DIR` (por defecto `./datos/archivos`).
+
+## Inventario (`/api/v1/inventario`)
+
+| Metodo | Ruta | Uso |
+|---|---|---|
+| GET, POST, PUT | `/inventario/bodegas`, `/inventario/bodegas/{codigo}` | Bodegas (limite del plan; la principal no se desactiva) |
+| GET | `/inventario/existencias?texto=&bodega=&soloBajoMinimo=&pagina=&tamano=` | Cuanto hay de cada producto (sin bodega suma todas), costo promedio y valor |
+| GET | `/inventario/existencias/resumen` | Valor del inventario, productos y cuantos estan por acabarse |
+| PUT | `/inventario/existencias/minimo` | Minimo de un producto en una bodega |
+| GET | `/inventario/kardex/{item}?bodega=&desde=&hasta=` | Movimientos del producto con el saldo que quedo |
+| GET, POST | `/inventario/ajustes`, `/inventario/ajustes/{codigo}` | Inventario inicial, entradas y salidas, consumo interno (se aplican al registrarse) |
+| POST | `/inventario/ajustes/{codigo}/anular` | Anula y devuelve las cantidades (`{motivo}`) |
+| GET, POST | `/inventario/traslados`, `/inventario/traslados/{codigo}` | Traslados entre bodegas (salen al registrarse) |
+| POST | `/inventario/traslados/{codigo}/recibir`, `/anular` | Confirma lo que llego (sin lineas: todo) o anula si sigue en camino |
+| POST | `/inventario/conteos` | Toma fisica: corrige las diferencias con un ajuste (`{ajuste}` o null si todo cuadra) |
+
+Las cantidades van siempre en la unidad base del producto. Las existencias solo cambian por movimientos del kardex.
