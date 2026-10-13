@@ -146,6 +146,46 @@ class InventarioFlujoTest extends PruebaIntegracion {
 			.andExpect(jsonPath("$.content[0].cantidad").value(0.0));
 	}
 
+	@Test
+	void producirUnFabricadoGastaSusInsumos() throws Exception {
+		String papel = producto("""
+				{"tipo":"INSUMO","nombre":"Papel bond carta","unidad":"ST","precioVenta":0}
+				""");
+		String sobre = producto("""
+				{"tipo":"FABRICADO","nombre":"Sobre de diezmos","unidad":"94","precioVenta":350}
+				""");
+		mvc.perform(json(put("/api/v1/productos/" + sobre + "/receta").cookie(admin),
+				"{\"componentes\":[{\"item\":\"" + papel + "\",\"cantidad\":1}]}"))
+			.andExpect(status().isOk());
+		mvc.perform(json(post("/api/v1/inventario/ajustes").cookie(admin), """
+				{"clase":"INICIAL","bodega":"%s","motivo":"Inventario inicial","lineas":[{"item":"%s","sentido":"ENTRADA","cantidad":500,"costo":40}]}
+				""".formatted(principal, papel)))
+			.andExpect(status().isCreated());
+
+		String orden = codigo(mvc.perform(json(post("/api/v1/inventario/producciones").cookie(admin), """
+				{"item":"%s","bodega":"%s","cantidad":100}
+				""".formatted(sobre, principal)))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.estado").value("EJECUTADA"))
+			.andExpect(jsonPath("$.costoUnitario").value(40.0))
+			.andReturn());
+		mvc.perform(get("/api/v1/inventario/existencias?texto=papel").cookie(admin))
+			.andExpect(jsonPath("$.content[0].cantidad").value(400.0));
+		mvc.perform(get("/api/v1/inventario/kardex/" + papel).cookie(admin))
+			.andExpect(jsonPath("$.content[0].documento").value(org.hamcrest.Matchers.startsWith("Producción OE")));
+		mvc.perform(json(post("/api/v1/inventario/producciones").cookie(admin), """
+				{"item":"%s","bodega":"%s","cantidad":1000}
+				""".formatted(sobre, principal)))
+			.andExpect(status().isConflict());
+
+		mvc.perform(json(post("/api/v1/inventario/producciones/" + orden + "/anular").cookie(admin), """
+				{"motivo":"Se registró por error"}
+				"""))
+			.andExpect(jsonPath("$.estado").value("ANULADA"));
+		mvc.perform(get("/api/v1/inventario/existencias?texto=papel").cookie(admin))
+			.andExpect(jsonPath("$.content[0].cantidad").value(500.0));
+	}
+
 	private String producto(String cuerpo) throws Exception {
 		return codigo(mvc.perform(json(post("/api/v1/productos").cookie(admin), cuerpo))
 			.andExpect(status().isCreated())

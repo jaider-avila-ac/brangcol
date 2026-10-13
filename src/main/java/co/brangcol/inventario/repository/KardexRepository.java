@@ -31,6 +31,7 @@ public class KardexRepository {
 				       case m.documento_tipo
 				           when 'AJUSTE' then (select a.numero from inventario.ajuste a where a.empresa_id = m.empresa_id and a.id = m.documento_id)
 				           when 'TRASLADO' then (select tr.numero from inventario.traslado tr where tr.empresa_id = m.empresa_id and tr.id = m.documento_id)
+				           when 'ENSAMBLE' then (select oe.numero from inventario.orden_ensamble oe where oe.empresa_id = m.empresa_id and oe.id = m.documento_id)
 				       end as numero,
 				       count(*) over () as total
 				from inventario.movimiento m

@@ -16,7 +16,7 @@ import co.brangcol.shared.web.PageResponse;
 public class MovimientoMapper {
 
 	private static final Map<String, String> DOCUMENTOS = Map.of("AJUSTE", "Ajuste", "TRASLADO", "Traslado",
-			"FACTURA", "Factura", "COMPRA", "Compra", "ENSAMBLE", "Ensamble", "NOTA", "Nota");
+			"FACTURA", "Factura", "COMPRA", "Compra", "ENSAMBLE", "Producción", "NOTA", "Nota");
 
 	// La cantidad sale en la columna de entrada o de salida segun el signo del movimiento
 	public PageResponse<MovimientoResponse> aPagina(Pagina<Movimiento> pagina, FiltroKardex filtro) {

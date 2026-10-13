@@ -133,5 +133,7 @@ Los archivos se guardan en disco en `ARCHIVOS_DIR` (por defecto `./datos/archivo
 | GET, POST | `/inventario/traslados`, `/inventario/traslados/{codigo}` | Traslados entre bodegas (salen al registrarse) |
 | POST | `/inventario/traslados/{codigo}/recibir`, `/anular` | Confirma lo que llego (sin lineas: todo) o anula si sigue en camino |
 | POST | `/inventario/conteos` | Toma fisica: corrige las diferencias con un ajuste (`{ajuste}` o null si todo cuadra) |
+| GET, POST | `/inventario/producciones`, `/inventario/producciones/{codigo}` | Produccion de fabricados: gasta lo que dice la receta y entra el producto terminado |
+| POST | `/inventario/producciones/{codigo}/anular` | Devuelve lo gastado y saca el producto terminado |
 
 Las cantidades van siempre en la unidad base del producto. Las existencias solo cambian por movimientos del kardex.
