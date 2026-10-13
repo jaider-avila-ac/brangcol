@@ -18,7 +18,8 @@ public class ItemResumenMapper {
 		List<ItemResumenResponse> contenido = new ArrayList<>();
 		for (ItemResumen i : pagina.items()) {
 			contenido.add(new ItemResumenResponse(i.codigo(), i.sku(), i.nombre(), i.tipo(), i.categoria(),
-					i.unidadSimbolo(), i.precioVenta(), i.precioConImpuesto(), i.costoPromedio(), i.activo()));
+					i.unidadSimbolo(), i.precioVenta(), i.precioConImpuesto(), i.costoPromedio(), i.activo(), i.existencia(), i.minimo(),
+					i.componentes(), i.cantidadComponentes()));
 		}
 		int paginas = (int) ((pagina.total() + filtro.tamano() - 1) / filtro.tamano());
 		return new PageResponse<>(contenido, filtro.pagina(), filtro.tamano(), pagina.total(), paginas);

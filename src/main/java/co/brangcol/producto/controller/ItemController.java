@@ -47,10 +47,11 @@ public class ItemController {
 	public PageResponse<ItemResumenResponse> buscar(@RequestParam(defaultValue = "") String texto,
 			@RequestParam(defaultValue = "") String tipo, @RequestParam(defaultValue = "") String categoria,
 			@RequestParam(defaultValue = "false") boolean soloComponentes,
+			@RequestParam(defaultValue = "false") boolean soloBajoMinimo,
 			@RequestParam(defaultValue = "false") boolean incluirInactivos,
 			@RequestParam(defaultValue = "0") int pagina, @RequestParam(defaultValue = "20") int tamano) {
 		FiltroItems filtro = new FiltroItems(Textos.vacioANulo(texto), Textos.vacioANulo(tipo),
-				Textos.vacioANulo(categoria), soloComponentes, incluirInactivos, Math.max(pagina, 0),
+				Textos.vacioANulo(categoria), soloComponentes, soloBajoMinimo, incluirInactivos, Math.max(pagina, 0),
 				Math.min(Math.max(tamano, 1), 100));
 		return itemResumenMapper.aPagina(itemBusquedaService.buscar(filtro), filtro);
 	}

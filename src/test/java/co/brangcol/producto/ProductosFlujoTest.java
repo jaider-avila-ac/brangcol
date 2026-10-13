@@ -111,11 +111,12 @@ class ProductosFlujoTest extends PruebaIntegracion {
 			.andExpect(jsonPath("$.componentes", hasSize(2)));
 		mvc.perform(get("/api/v1/productos/" + sobre + "/receta").cookie(admin))
 			.andExpect(jsonPath("$.componentes[*].nombre", hasItem("Goma líquida")));
-		mvc.perform(get("/api/v1/productos/recetas").cookie(admin))
-			.andExpect(jsonPath("$", hasSize(1)))
-			.andExpect(jsonPath("$[0].nombre").value("Sobre de diezmos"))
-			.andExpect(jsonPath("$[0].cantidadComponentes").value(2))
-			.andExpect(jsonPath("$[0].componentes").value("Goma líquida 2.5 mL, Papel bond carta 1 hoja"));
+		mvc.perform(get("/api/v1/productos?tipo=SERVICIO").cookie(admin))
+			.andExpect(jsonPath("$.content", hasSize(1)))
+			.andExpect(jsonPath("$.content[0].nombre").value("Sobre de diezmos"))
+			.andExpect(jsonPath("$.content[0].existencia").value(org.hamcrest.Matchers.nullValue()))
+			.andExpect(jsonPath("$.content[0].cantidadComponentes").value(2))
+			.andExpect(jsonPath("$.content[0].componentes").value("Goma líquida 2.5 mL, Papel bond carta 1 hoja"));
 
 		mvc.perform(get("/api/v1/productos?soloComponentes=true").cookie(admin))
 			.andExpect(jsonPath("$.content[*].nombre", not(hasItem("Sobre de diezmos"))));

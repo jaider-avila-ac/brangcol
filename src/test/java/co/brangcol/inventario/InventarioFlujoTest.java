@@ -128,6 +128,10 @@ class InventarioFlujoTest extends PruebaIntegracion {
 		mvc.perform(get("/api/v1/inventario/existencias?soloBajoMinimo=true").cookie(admin))
 			.andExpect(jsonPath("$.content", hasSize(1)))
 			.andExpect(jsonPath("$.content[0].nombre").value("Papel bond carta"));
+		mvc.perform(get("/api/v1/productos?soloBajoMinimo=true").cookie(admin))
+			.andExpect(jsonPath("$.content", hasSize(1)))
+			.andExpect(jsonPath("$.content[0].existencia").value(990.0))
+			.andExpect(jsonPath("$.content[0].minimo").value(1000.0));
 	}
 
 	@Test
@@ -201,8 +205,8 @@ class InventarioFlujoTest extends PruebaIntegracion {
 			.andExpect(jsonPath("$.componentes[0].cantidad").value(1.0))
 			.andExpect(jsonPath("$.componentes[0].unidad").value("resma"))
 			.andExpect(jsonPath("$.componentes[0].presentacion").value("RM"));
-		mvc.perform(get("/api/v1/productos/recetas").cookie(admin))
-			.andExpect(jsonPath("$[0].componentes").value("Papel bond carta 1 resma"));
+		mvc.perform(get("/api/v1/productos?tipo=FABRICADO").cookie(admin))
+			.andExpect(jsonPath("$.content[0].componentes").value("Papel bond carta 1 resma"));
 
 		mvc.perform(json(post("/api/v1/inventario/ajustes").cookie(admin), """
 				{"clase":"INICIAL","bodega":"%s","motivo":"Inventario inicial","lineas":[{"item":"%s","sentido":"ENTRADA","cantidad":1500,"costo":40}]}
